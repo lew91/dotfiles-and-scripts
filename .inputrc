@@ -1,3 +1,13 @@
+# Use the text that has already been typed as the prefix for searching through
+# commands (i.e. more intelligent Up/Down behavior)
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+
+# Try to stay at the same cursor position when moving through the history
+set history-preserve-point on
+
+
+
 # Make Tab autocomplete regardless of filename case
 set completion-ignore-case on
 
@@ -7,10 +17,8 @@ set show-all-if-ambiguous on
 # Immediately add a trailing slash when autocompleting symlinks to directories
 set mark-symlinked-directories on
 
-# Use the text that has already been typed as the prefix for searching through
-# commands (i.e. more intelligent Up/Down behavior)
-"\e[B": history-search-forward
-"\e[A": history-search-backward
+# Filp through autocompletion matches with Shit-Tab
+"\e[Z": menu-complete
 
 # Do not autocomplete hidden files unless the pattern explicitly begins with a dot
 set match-hidden-files off
@@ -39,4 +47,6 @@ set convert-meta off
 # Use Alt/Meta + Delete to delete the preceding word
 "\e[3;3~": kill-word
 
-TAT: menu-complete
+# Neither sound a beep nor flash the screen when trying to ring the bell.
+set bell-style none
+
