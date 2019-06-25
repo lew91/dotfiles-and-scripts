@@ -4,7 +4,7 @@
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 
-set rtp+=/usr/local/opt/fzf 
+"set rtp+=/usr/local/opt/fzf 
 
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
@@ -82,7 +82,8 @@ filetype plugin indent on " required
 "-----------------
 " Plugin settings
 "---------------
-"for rainbow parentheses improved
+"=====[ rainbow parentheses improved ]==========================
+
 let g:rainbow_active = 1 " 0 if you want to enable it later via :RainbowToggle
 
 " Rainbow parentheses for Lisp and variants
@@ -107,7 +108,47 @@ let g:rbpt_colorpairs = [
 let g:rbpt_max = 16
 "autocmd Syntax lisp,scheme,clojure,racket,python,RainbowParenthesesTogglei
 
-"YoucompleteMe
+"=====[ Configure ALE ]==================
+" Install the following:
+"     https://github.com/w0rp/ale
+"     https://github.com/jceb/vim-hier
+
+highlight AleError    ctermfg=red     cterm=bold
+highlight AleWarning  ctermfg=magenta cterm=bold
+
+augroup ALE_Autoconfig
+    au!
+    autocmd User GVI_Start  silent call Stop_ALE()
+    autocmd User PV_Start   silent call Stop_ALE()
+    autocmd User PV_End     silent call Start_ALE()
+    autocmd User ALELint    silent HierUpdate
+augroup END
+
+let g:ale_set_loclist          = 0
+let g:ale_set_quickfix         = 1
+let g:ale_set_signs            = 0
+let g:ale_linters              = { 'perl': ['perl'] }
+let g:ale_perl_perl_executable = 'polyperl'
+let g:ale_perl_perl_options    = '-cw -Ilib'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+
+"let g:ale_sign_column_always = 1 " keep the sign gutter open at all times
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   '%dW %dE',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
+"========[  YoucompleteMe ] ===============================
+
 let g:ycm_python_interpreter_path='/usr/local/bin/python3'
 let g:ycm_python_sys_path = []
 let g:ycm_extra_conf_vim_data = [
@@ -149,7 +190,9 @@ let g:ycm_semantic_triggers =  {
 
 
 
-" tabbar
+"=========[  tabbar  ] =========================
+
+
 "let g:Tb_MaxSize = 2
 "let g:Tb_TabWrap = 1
 
@@ -159,7 +202,8 @@ let g:ycm_semantic_triggers =  {
 "hi Tb_VisibleChanged guifg=green ctermbg=252 ctermfg=white
 
 
-" Tagbar
+"=============[ Tagbar ]========================================
+
 let g:tagbar_left=1
 let g:tagbar_width=30
 let g:tagbar_autofocus = 1
@@ -190,7 +234,10 @@ if executable('coffeetags')
     \ }
 endif
 
-" Nerd Tree
+
+
+"===========[  Nerd Tree ]==================================
+
 let NERDChristmasTree=0
 let NERDTreeWinSize=30
 let NERDTreeChDirMode=2
@@ -204,7 +251,9 @@ let NERDSpaceDelims=1
 " nmap <D-/> :NERDComToggleComment<cr>
 let NERDCompactSexyComs=1
 
-" powerline  --not used since 2018
+"=========[ powerline  --not used since 2018 ]====================
+
+
 "let g:Powerline_symbols = 'fancy'
 
 "airline
@@ -216,53 +265,43 @@ let NERDCompactSexyComs=1
 "let g:airline_solarized_bg='dark'
 "let g:airline_theme="minimalist"
 
-"ale
-"let g:ale_sign_column_always = 1 " keep the sign gutter open at all times
-function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
 
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-
-    return l:counts.total == 0 ? 'OK' : printf(
-    \   '%dW %dE',
-    \   all_non_errors,
-    \   all_errors
-    \)
-endfunction
-
-set statusline=%{LinterStatus()}
+"set statusline=%{LinterStatus()}
 
 
-"sneak
+"============[ sneak ]=======================================
+
 "let g:sneak#label = 1    "label-mode for a minimalist alternative EasyMotion
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 
-" easy-motion
+"==============[ easy-motion ]============================
 "let g:EasyMotion_leader_key = '<Leader>'
 
-" ctrlp
+
+"=============[ ctrlp ]===============================
+
 "set wildignore+=*/tmp/*,*.so,*.o,*.a,*.obj,*.swp,*.zip,*.pyc,*.pyo,*.class,.DS_Store  " MacOSX/Linux
 "let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
 
-"fzf
+"===========[  fzf ]================================
+
 ""nmap <c-p> :Files<CR>
 ""nmap <c-e> :Buffers<CR>
 "let g:fzf_action = { 'crtl-e': 'edit'}
 
-"incsearch
+"===========[  incsearch ]===========================
 map / <plug>(incsearch-forward)
 map ? <plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
-"auto-pairs  --fly mode 1 is turn on 0 is not
+"==========[  auto-pairs  --fly mode 1 is turn on 0 is not ]=================
 let g:AutoPairsFlyMode = 0
 "let g:AutoPairsShortcutBackInsert = '<M-b'
 
-" Keybindings for plugin toggle
+"=======[  Keybindings for plugin toggle ]====================
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 nmap <F5> :TagbarToggle<cr>

@@ -1,69 +1,64 @@
 
 " ---------------------------------------
 """ Basic Setup
-"---------------------------------------
-" Make Vim more useful.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"=====[  Make Vim more useful. ]==================
+
 set nocompatible
 
-" Set the default shell.
+"=====[ Set the default shell.]================
+
 if exists('$SHELL')
     set shell=$SHELL
 else
     set shell=/bin/sh
 endif
 
-" When the type of shell script is /bin/sh, assume a POSIX-compatible
-" shell for syntax highlighting purposes.
+"When the type of shell script is /bin/sh, assume a POSIX-compatible 
+"shell for syntax highlighting purposes. 
+
 let g:is_posix = 1
 
-" Tell vim to use the .vim path first.
+"=====[  Tell vim to use the .vim path first. ]===============
+
 set runtimepath=~/.vim,$VIMRUNTIME
 
-" Optimize for fast terminal connections
+"=====[  Optimize for fast terminal connections ]==============
+
 set ttyfast
 
-" Enable filetype dectection and ft specific plugin/indent
-"filetype plugin indent on
+"====[  Enable filetype dectection and ft specific plugin/indent ]=============
 
-" enable syntax hightlight and completion
+filetype plugin indent on
+
+"=====[  enable syntax hightlight and completion ] =============
+
 syntax on
 
-" Search
-set incsearch
-" Highlight searches
-set hlsearch
-" Add the g flag to search/replace by default.
-set gdefault
+"=====[ Convert to Unicode defaults ]===============================
 
-" Conflict with highlight current line
-"set highlight 	
-set ignorecase
-set smartcase
+setglobal termencoding=utf-8 fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,lattin1,cp932,sjis,utf-16le,euc-jp
+scriptencoding utf-8
+set encoding=utf-8
 
-" Set encoding.
-if has('multi_byte')
-  scriptencoding utf-8
-  set encoding=utf-8
-  set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,lattin1,cp932,sjis,utf-16le,euc-jp
+autocmd BufNewFile,BufRead  *   try
+autocmd BufNewFile,BufRead  *       set encoding=utf-8
+autocmd BufNewFile,BufRead  *   endtry
 
-  if has("win32") || has("win64")
-    set termencoding=gbk
-  endif
-  if has("linux") || has("unix")
-    set termencoding=utf-8
-  endif
-endif
+"None word dividers.
 
-" None word dividers.
 set isk+=_,$,@,%,#,-
 
-" Try to detect file formats.
-" Unix for new files and autodetect for the rest.
+"Try to detect file formats. Unix for new files and autodetect for the rest. 
+
 set fileformats=unix,dos,mac
+
+
 
 "------------------------------------------------------
 """ Vim UI
-"----------------------------------------------------
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enhance command-line completion.
 if exists("+wildmenu")
   set wildmenu
@@ -71,11 +66,9 @@ if exists("+wildmenu")
   set wildmode=longest:full,list:full
 endif
 
-
-" Respect modeline in files
-set modeline
-set modelines=4
-
+" NO modeline
+set nomodeline
+set modelines=0
 
 " Enable per-directory .vimrc files.
 set exrc
@@ -99,11 +92,9 @@ set scrolloff=5                                                   " 5 lines abov
 "set number                                                        " show line numbers
 set showmatch                                                     " show matching bracket (briefly jump)
 set showcmd                                                       " show typed command in status bar
-set showmode                                                      "show the current mode
-set title                                                         " show file in titlebar
 "set laststatus=2                                                  " use 2 lines for the status bar
 set matchtime=2                                                   " show matching bracket for 0.2 seconds
-set matchpairs+=<:>                                               " specially for html
+set matchpairs+=<:>,«:»,｢:｣                                              " specially for html
 if exists("&relativenumber")                                      
     set relativenumber
     au BufReadPost * set relativenumber
@@ -114,9 +105,8 @@ set binary
 set noeol
 
 
-filetype on
+"=====[  Default Indentation ]==============================
 
-" Default Indentation
 set autoindent
 set smartindent     " indent when
 set tabstop=4       " tab width
@@ -125,6 +115,7 @@ set shiftwidth=4    " indent width
 " set textwidth=79
 " set smarttab
 set expandtab       " expand tab to space
+
 
 autocmd FileType c setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=120
 autocmd FileType cpp setlocal tabstop=4 shiftwidth=4 softtabstop=4 textwidth=120
@@ -196,8 +187,8 @@ if &t_Co > 2 || has("gui_running")
         map <D-8> 8gt
         map <D-9> 9gt
         map <D-0> :tablast<CR>
-    else
-        colorscheme pablo
+    "else
+        "colorscheme pablo
     endif
 else
     " Indentline
@@ -220,18 +211,388 @@ if &term =~ '256color'
     set t_ut=
 endif
 
+"======[ Fix colourscheme for 256 colours ]============================
+
+highlight Visual       ctermfg=Yellow ctermbg=26    " 26 = Dusty blue background
+highlight SpecialKey   cterm=bold ctermfg=Blue
+
+"======[ highlight popup ]=======================
+
+" Make the completion popup look menu-ish on a Mac...
+highlight  Pmenu        ctermbg=white   ctermfg=black
+highlight  PmenuSel     ctermbg=blue    ctermfg=white   cterm=bold
+highlight  PmenuSbar    ctermbg=grey    ctermfg=grey
+highlight  PmenuThumb   ctermbg=blue    ctermfg=blue
+
+" Make diffs less glaringly ugly...
+highlight DiffAdd     cterm=bold ctermfg=green     ctermbg=black
+highlight DiffChange  cterm=bold ctermfg=grey      ctermbg=black
+highlight DiffDelete  cterm=bold ctermfg=black     ctermbg=black
+highlight DiffText    cterm=bold ctermfg=magenta   ctermbg=black
+
+" Grammar checking
+highlight GRAMMARIAN_ERRORS_MSG   ctermfg=red   cterm=bold
+highlight GRAMMARIAN_CAUTIONS_MSG ctermfg=white cterm=bold
+
+"=====[ Highlight cursor ]===================
+
+" Inverse highlighting for cursor...
+highlight CursorInverse ctermfg=black ctermbg=white
+
+" Set up highlighter at high priority (i.e. 99)
+call matchadd('CursorInverse', '\%#.', 99)
+
+"=======[ Prettier tabline ]============================================
+
+highlight Tabline      cterm=underline       ctermfg=40     ctermbg=22
+highlight TablineSel   cterm=underline,bold  ctermfg=white  ctermbg=28
+highlight TablineFill  cterm=NONE            ctermfg=black  ctermbg=black
+
+
+
 "---------------------------------------------------------
 """ Files Editing
 "---------------------------------------------------------
+"====[ Use persistent undo ]=================
+
+if has('persistent_undo')
+    " Save all undo files in a single location (less messy, more risky)...
+    set undodir=$HOME/.VIM_UNDO_FILES
+
+    " Save a lot of back-history...
+    set undolevels=5000
+
+    " Actually switch on persistent undo
+    set undofile
+
+endif
+
+"====[ Toggle visibility of naughty characters ]============
+
+" Make naughty characters visible...
+" (uBB is right double angle, uB7 is middle dot)
+set lcs=tab:»·,trail:␣,nbsp:˷
+highlight InvisibleSpaces ctermfg=Black ctermbg=Black
+call matchadd('InvisibleSpaces', '\S\@<=\s\+\%#\ze\s*$')
+
+augroup VisibleNaughtiness
+    autocmd!
+    autocmd BufEnter  *       set list
+    autocmd BufEnter  *       set list
+    autocmd BufEnter  *.txt   set nolist
+    autocmd BufEnter  *.vp*   set nolist
+    autocmd BufEnter  *       if !&modifiable
+    autocmd BufEnter  *           set nolist
+    autocmd BufEnter  *       endif
+augroup END
+
+"====[ Set up smarter search behaviour ]=======================
+
+set incsearch       "Lookahead as search pattern is specified
+set ignorecase      "Ignore case in all searches...
+set smartcase       "...unless uppercase letters used
+
+set hlsearch        "Highlight all matches
+highlight clear Search
+highlight       Search    ctermfg=White  ctermbg=Black  cterm=bold
+highlight    IncSearch    ctermfg=White  ctermbg=Red    cterm=bold
+
+function! TrimTrailingWS ()
+    if search('\s\+$', 'cnw')
+        :%s/\s\+$//g
+    endif
+endfunction
+
 " Ignore whitespace in vimdiff.
 if &diff
   set diffopt+=iwhite
 endif
 
+"=====[ Diff against disk ]==========================================
+
+map <silent> zd :silent call DC_DiffChanges()<CR>
+
+" Change the fold marker to something more useful
+function! DC_LineNumberOnly ()
+    if v:foldstart == 1 && v:foldend == line('$')
+        return '.. ' . v:foldend . '  (No difference)'
+    else
+        return '.. ' . v:foldend
+    endif
+endfunction
+
+" Track each buffer's initial state
+augroup DC_TrackInitial
+    autocmd!
+    autocmd BufReadPost,BufNewFile  *   if !exists('b:DC_initial_state')
+    autocmd BufReadPost,BufNewFile  *       let b:DC_initial_state = getline(1,'$')
+    autocmd BufReadPost,BufNewFile  *   endif
+augroup END
+
+highlight DC_DEEMPHASIZED ctermfg=grey
+
+function! DC_DiffChanges ()
+    diffthis
+    highlight Normal ctermfg=grey
+    let initial_state = b:DC_initial_state
+    set diffopt=context:2,filler,foldcolumn:0
+"    set fillchars=fold:ÃÂ 
+    set foldcolumn=0
+    setlocal foldtext=DC_LineNumberOnly()
+    set number
+
+"    aboveleft vnew
+    belowright vnew
+    normal 0
+    silent call setline(1, initial_state)
+    diffthis
+    set diffopt=context:2,filler,foldcolumn:0
+"    set fillchars=fold:ÃÂ 
+    set foldcolumn=0
+    setlocal foldtext=DC_LineNumberOnly()
+    set number
+
+    nmap <silent><buffer> zd :diffoff<CR>:q!<CR>:set diffopt& fillchars& number& foldcolumn=0<CR>:set nodiff<CR>:highlight Normal ctermfg=NONE<CR>
+endfunction
+
 " Strip trailing whitespaces automatically when saving files of certain type.
 if has("autocmd")
   autocmd BufWritePre *.py,*.js,*.php,*.gpx,*.rb,*.tpl :call StripTrailingWhitespaces()
 endif
+
+"=====[ Make Visual modes work better ]==================
+
+" Visual Block mode is far more useful that Visual mode (so swap the commands)...
+nnoremap v <C-V>
+nnoremap <C-V> v
+
+xnoremap v <C-V>
+xnoremap <C-V> v
+
+"Square up visual selections...
+set virtualedit=block
+
+" Make BS/DEL work as expected in visual modes (i.e. delete the selected text)...
+xmap <BS> x
+
+" Make vaa select the entire file...
+xmap aa VGo1G
+
+" Make q extend to the surrounding string...
+xmap  q   "_y:call ExtendVisualString()<CR>
+
+let s:closematch = [ '', '', '}', ']', ')', '>', '/', "'", '"', '`' ]
+let s:ldelim = '\< \%(q [qwrx]\= \| [smy] \| tr \) \s*
+\               \%(
+\                   \({\) \| \(\[\) \| \((\) \| \(<\) \| \(/\)
+\               \)
+\               \|
+\                   \(''\) \| \("\) \| \(`\)
+\'
+let s:ldelim = substitute(s:ldelim, '\s\+', '', 'g')
+
+function! ExtendVisualString ()
+    let [lline, lcol, lmatch] = searchpos(s:ldelim, 'bWp')
+    if lline == 0
+        return
+    endif
+    let rdelim = s:closematch[lmatch]
+    normal `>
+    let rmatch = searchpos(rdelim, 'W')
+    normal! v
+    call cursor(lline, lcol)
+endfunction
+
+"=====[ Make arrow keys move visual blocks around ]======================
+
+xmap <up>    <Plug>SchleppUp
+xmap <down>  <Plug>SchleppDown
+xmap <left>  <Plug>SchleppLeft
+xmap <right> <Plug>SchleppRight
+
+xmap D       <Plug>SchleppDupLeft
+xmap <C-D>   <Plug>SchleppDupLeft
+
+"=====[ Miscellaneous features (mainly options) ]=====================
+
+set title           "Show filename in titlebar of window
+set titleold=
+"set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
+set title titlestring=
+
+set nomore          "Don't page long listings
+
+set cpoptions-=a    "Don't set # after a :read
+
+set autowrite       "Save buffer automatically when changing files
+set autoread        "Always reload buffer when external changes detected
+
+"           +--Disable hlsearch while loading viminfo
+"           | +--Remember marks for last 500 files
+"           | |    +--Remember up to 10000 lines in each register
+"           | |    |      +--Remember up to 1MB in each register
+"           | |    |      |     +--Remember last 1000 search patterns
+"           | |    |      |     |     +---Remember last 1000 commands
+"           | |    |      |     |     |
+"           v v    v      v     v     v
+set viminfo=h,'500,<10000,s1000,/1000,:1000
+
+
+set wildmode=list:longest,full      "Show list of completions
+                                    "  and complete as much as possible,
+                                    "  then iterate full completions
+
+set infercase                       "Adjust completions to match case
+
+set noshowmode                      "Suppress mode change messages
+
+set updatecount=10                  "Save buffer every 10 chars typed
+
+
+" Keycodes and maps timeout in 3/10 sec...
+set timeout timeoutlen=300 ttimeoutlen=300
+
+" "idleness" is 2 sec
+set updatetime=2000
+
+set scrolloff=2                     "Scroll when 3 lines from top/bottom
+
+
+"=====[ Cut and paste from the system clipboard ]====================
+
+" When in Normal mode, paste over the current line...
+nmap  <C-P> 0d$"*p
+
+" When in Visual mode, paste over the selected region...
+xmap  <C-P> "*pgv
+
+" In Normal mode, yank the entire buffer...
+nmap <C-C> 1G"*yG``:call YankedToClipboard()<CR>
+
+" In Visual mode, yank the selection...
+xmap  <C-C> "*y:call YankedToClipboard()<CR>
+
+function! YankedToClipboard ()
+    let block_of = (visualmode() == "\<C-V>" ? 'block of ' : '')
+    let N = strlen(substitute(@*, '[^\n]\|\n$', '', 'g')) + 1
+    let lines = (N == 1 ? 'line' : 'lines')
+    redraw
+    echo block_of . N lines 'yanked to clipboard'
+endfunction
+
+
+"=====[ Search folding ]=====================
+
+" Don't start new buffers folded
+set foldlevelstart=99
+
+" Highlight folds
+highlight Folded  ctermfg=cyan ctermbg=black
+
+" Toggle special folds on and off...
+nmap <silent> <expr>  zz  FS_ToggleFoldAroundSearch({'context':1})
+nmap <silent> <expr>  zc  FS_ToggleFoldAroundSearch({'hud':1})
+
+
+" Heads-up on function names (in Vim and Perl)...
+
+let g:HUD_search = {
+\   'vim':  { 'list':     [ { 'start': '^\s*fu\%[nction]\>!\?\s*\w\+.*',
+\                             'end':   '^\s*endf\%[unction]\>\zs',
+\                           },
+\                           { 'start': '^\s*aug\%[roup]\>!\?\s*\%(END\>\)\@!\w\+.*',
+\                             'end':   '^\s*aug\%[roup]\s\+END\>\zs',
+\                           },
+\                         ],
+\              'default': '"file " . expand("%:~:.")',
+\           },
+\
+\   'perl': { 'list':    [ { 'start': '\_^\s*\zssub\s\+\w\+.\{-}\ze\s*{\|^__\%(DATA\|END\)__$',
+\                            'end':   '}\zs',
+\                          },
+\                          { 'start': '\_^\s*\zspackage\s\+\w\+.\{-}\ze\s*{',
+\                            'end':   '}\zs',
+\                          },
+\                          { 'start': '\_^\s*\zspackage\s\+\w\+.\{-}\ze\s*;',
+\                            'end':   '\%$',
+\                          },
+\                        ],
+\             'default': '"package main"',
+\          },
+\ }
+
+function! HUD ()
+    let target = get(g:HUD_search, &filetype, {})
+    let name = "'????'"
+    if !empty(target)
+        let name = eval(target.default)
+        for nexttarget in target.list
+            let [linestart, colstart] = searchpairpos(nexttarget.start, '', nexttarget.end, 'cbnW')
+            if linestart
+                let name = matchstr(getline(linestart), nexttarget.start)
+                break
+            endif
+        endfor
+    endif
+
+    if line('.') <= b:FS_DATA.context
+        return '⎺⎺⎺⎺⎺\ ' . name . ' /⎺⎺⎺⎺⎺' . repeat('⎺',200)
+    else
+        return '⎽⎽⎽⎽⎽/ ' . name . ' \⎽⎽⎽⎽⎽' . repeat('⎽',200)
+    endif
+endfunction
+
+nmap <silent> <expr>  zh  FS_ToggleFoldAroundSearch({'hud':1, 'folds':'HUD()', 'context':3})
+
+
+" Show only sub defns (and maybe comments)...
+let perl_sub_pat = '^\s*\%(sub\|func\|method\|package\)\s\+\k\+'
+let vim_sub_pat  = '^\s*fu\%[nction!]\s\+\k\+'
+augroup FoldSub
+    autocmd!
+    autocmd BufEnter * nmap <silent> <expr>  zp  FS_FoldAroundTarget(perl_sub_pat,{'context':1})
+    autocmd BufEnter * nmap <silent> <expr>  za  FS_FoldAroundTarget(perl_sub_pat.'\zs\\|^\s*#.*',{'context':0, 'folds':'invisible'})
+    autocmd BufEnter *.vim,.vimrc nmap <silent> <expr>  zp  FS_FoldAroundTarget(vim_sub_pat,{'context':1})
+    autocmd BufEnter *.vim,.vimrc nmap <silent> <expr>  za  FS_FoldAroundTarget(vim_sub_pat.'\\|^\s*".*',{'context':0, 'folds':'invisible'})
+    autocmd BufEnter * nmap <silent> <expr>             zv  FS_FoldAroundTarget(vim_sub_pat.'\\|^\s*".*',{'context':0, 'folds':'invisible'})
+augroup END
+
+" Show only 'use' statements
+nmap <silent> <expr>  zu  FS_FoldAroundTarget('\(^\s*\(use\\|no\)\s\+\S.*;\\|\<require\>\s\+\S\+\)',{'context':1})
+
+
+"=====[ Interface with ag ]======================
+
+set grepprg=ag\ --vimgrep\ $*
+set grepformat=%f:%l:%c:%m
+
+" Also use ag in GVI...
+let g:GVI_use_ag = 1
+
+
+"=====[ Decute startify ]================
+
+let g:startify_custom_header = []
+
+
+"=====[ Configure change-tracking ]========
+
+let g:changes_hl_lines=1
+let g:changes_verbose=0
+let g:changes_autocmd=1
+
+
+"=====[ Make netrw more instantly useful ]============
+
+let g:netrw_sort_by        = 'time'
+let g:netrw_sort_direction = 'reverse'
+let g:netrw_banner         = 0
+let g:netrw_liststyle      = 3
+let g:netrw_browse_split   = 3
+let g:netrw_fastbrowse     = 1
+let g:netrw_sort_by        = 'name'
+let g:netrw_sort_direction = 'normal'
+
 
 
 " Dont't create backups when editing files in certain directories
@@ -587,6 +948,48 @@ function! <SID>BufcloseCloseIt()
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
+
+
+"======[ Order-preserving uniqueness ]=========================
+
+" Normalize the whitespace in a string...
+function! TrimWS (str)
+    " Remove whitespace fore and aft...
+    let trimmed = substitute(a:str, '^\s\+\|\s\+$', '', 'g')
+
+    " Then condense internal whitespaces...
+    return substitute(trimmed, '\s\+', ' ', 'g')
+endfunction
+
+" Reduce a range of lines to only the unique ones, preserving order...
+function! Uniq (...) range
+    " Ignore whitespace differences, if asked to...
+    let ignore_ws_diffs = len(a:000)
+
+    " Nothing unique seen yet...
+    let seen = {}
+    let uniq_lines = []
+
+    " Walk through the lines, remembering only the hitherto unseen ones...
+    for line in getline(a:firstline, a:lastline)
+        let normalized_line = '>' . (ignore_ws_diffs ? TrimWS(line) : line)
+        if !get(seen,normalized_line)
+            call add(uniq_lines, line)
+            let seen[normalized_line] = 1
+        endif
+    endfor
+
+    " Replace the range of original lines with just the unique lines...
+    exec a:firstline . ',' . a:lastline . 'delete'
+    call append(a:firstline-1, uniq_lines)
+endfunction
+
+"====[ Regenerate help tags when directly editing a help file ]=================
+
+augroup HelpTags
+    au!
+    autocmd BufWritePost ~/.vim/doc/*   :helptags ~/.vim/doc
+augroup END
 
 
 
