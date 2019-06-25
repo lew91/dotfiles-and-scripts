@@ -3,37 +3,52 @@
 """ Basic Setup
 "---------------------------------------
 
-" encoding dectection
-set encoding=utf-8
+" Encoding dectection without BOM
+set encoding=utf-8 nobomb
 "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-set fileencoding=utf-8
+"set fileencoding=utf-8
+" Optimize for fast terminal connections
 set ttyfast
 
-" enable filetype dectection and ft specific plugin/indent
+" Enable filetype dectection and ft specific plugin/indent
 "filetype plugin indent on
 
 " enable syntax hightlight and completion
 syntax on
 
+" Enhancee command-line completion
+set wildmenu
+
 "--------
 " Vim UI
 "--------
-" color scheme
+" Color scheme
 set background=dark
 "color pablo
 
-" highlight current line
+" Highlight current line
 "au WinLeave * set nocursorline nocursorcolumn
 "au WinEnter * set cursorline cursorcolumn
 "set cursorline cursorcolumn
 
-" search
+" Search
 set incsearch
-"set highlight 	" conflict with highlight current line
+" Highlight searches
+set hlsearch
+
+" Conflict with highlight current line
+"set highlight 	
 set ignorecase
 set smartcase
 
 "set fileformats=unix,dos,mac
+
+" Respect modeline in files
+set modeline
+set modelines=4
+
+" Show the current mode
+set showmode
 
 if exists('$SHELL')
     set shell=$SHELL
@@ -44,26 +59,38 @@ endif
 
 " editor settings
 set history=1000
-set nocompatible
+set nocompatible                                                  " be iMproved
 set nofoldenable                                                  " disable folding"
 set confirm                                                       " prompt when existing from an unsaved file
 set backspace=indent,eol,start                                    " More powerful backspacing
-set t_Co=256                                                      " Explicitly tell vim that the terminal has 256 colors "
+set t_Co=256                                                      " Explicitly tell vim that the terminal has 256 colors 
 set mouse=a                                                       " use mouse in all modes
-set report=0                                                      " always report number of lines changed                "
+set ruler                                                         " show the cursor position
+set nostartofline                                                 " don't reset cursor to start of line when moving around 
+set report=0                                                      " always report number of lines changed                
 set nowrap                                                        " dont wrap lines
 set scrolloff=5                                                   " 5 lines above/below cursor when scrolling
 "set number                                                        " show line numbers
 set showmatch                                                     " show matching bracket (briefly jump)
 set showcmd                                                       " show typed command in status bar
-"set title                                                         " show file in titlebar
+set showmode                                                      "show the current mode
+set title                                                         " show file in titlebar
 "set laststatus=2                                                  " use 2 lines for the status bar
 set matchtime=2                                                   " show matching bracket for 0.2 seconds
 set matchpairs+=<:>                                               " specially for html
-" set relativenumber
-filetype off
-set nocompatible " be iMproved
+if exists("&relativenumber")                                      
+    set relativenumber
+    au BufReadPost * set relativenumber
+endif                                                             "show relative line number
 
+" Don't add empty newlines at the end of files
+set binary
+set noeol
+
+" Dont't create backups when editing files in certain directories
+set backupskip=/tmp/*,/private/tmp/*
+
+filetype off
 
 " Default Indentation
 set autoindent
@@ -161,6 +188,16 @@ autocmd BufReadPost *
       \         exe "normal g'\"" |
       \     endif |
       \ endif
+
+" Strip trailing whitespace (,ss)
+function! StripWhitespace()
+	let save_cursor = getpos(".")
+	let old_query = getreg('/')
+	:%s/\s\+$//e
+	call setpos('.', save_cursor)
+	call setreg('/', old_query)
+endfunction
+noremap <leader>ss :call StripWhitespace()<CR>
 
 " w!! to sudo & write a file
 cmap w!! %!sudo tee >/dev/null %
