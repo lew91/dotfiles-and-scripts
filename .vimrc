@@ -7,6 +7,10 @@
 
 set nocompatible
 
+"=====[ mapleader mappings ]==================
+
+let mapleader = '_'
+
 "=====[ Set the default shell.]================
 
 if exists('$SHELL')

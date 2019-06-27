@@ -33,6 +33,7 @@ Plugin 'haya14busa/incsearch.vim'
 Plugin 'jiangmiao/auto-pairs' 
 Plugin 'l04m33/vlime'
 
+Plugin 'mbbill/undotree'
 
 let g:make = 'gmake'
 if exists('make')
@@ -309,3 +310,7 @@ nmap <F6> :NERDTreeToggle<cr>
 nmap  <D-/> :
 nnoremap <leader>a :Ack
 nnoremap <leader>v V`]
+
+"========[ Undo tree ]========================
+let g:undotree_WindowLayout = 2
+nnoremap U :UndotreeToggle<CR>
