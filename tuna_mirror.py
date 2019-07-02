@@ -183,4 +183,158 @@ class Base(object):
 
         print('%s [%s]: %s%s' % (color_prefix[level], cls.name(),msg, color_suffix))
 
-        
+
+class Pypi(Base):
+    mirror_url = 'https://pypi.%s/simaple' % host_name
+
+    """
+    Reference: https://pip.pypa.io/en/stable/user_guide/#configuration
+    """
+
+    @staticmethod
+    def config_files():
+        system = platform.system()
+        if system == 'Darwin':
+            return ('$HOME/Library/Application Support/pip/pip.conf', '$HOME/.pip/pip.conf')
+        elif system == 'Windows':
+            return ('%APPDATA%\pip\pip.ini', '~/pip/pip.ini')
+        elif system == 'Linux':
+            return ('$HOME/.config/pip/pip.conf', '$HOME/.pip/pip.conf')
+
+    @staticmethod
+    def name():
+        return "pypi"
+
+    @staticmethod
+    def is_applicable():
+        global is_global
+        if is_global:
+            # Skip if in global mode
+            return False
+        return sh('pip') is not None or sh('pip3') is not None
+
+    @staticmethod
+    def is_online():
+        pattern = re.compile(r' *index-url *= *%s' % Pypi.mirror_url)
+        config_files = Pypi.config_files()
+        for config_file in config_files:
+            if not os.path.exists(os.path.expandvars(config_file)):
+                continue
+            with open(os.path.expandvars(config_file)) as f:
+                for line in f:
+                    if pattern.match(line):
+                        return True
+        return False
+
+    @staticmethod
+    def up():
+        config_file = os.path.expandvars(Pypi.config_files()[0])
+        config = configparser.ConfigParser()
+        if os.path.exists(config_file):
+            config.read(config_file)
+        if not config.has_section('global'):
+            config.add_section('global')
+        if not os.path.isdir(os.path.dirname(config_file)):
+            mkdir_p(os.path.dirname(config_file))
+        config.set('global', 'index-url', Pypi.mirror_url)
+        with open(config_file, 'w') as f:
+            config.write(f)
+        return True
+
+    @staticmethod
+    def down():
+        config_files = map(os.path.expandvars, Pypi.config_files())
+        config = configparser.ConfigParser()
+        for path in config_files:
+            if not os.path.exists(path):
+                continue
+            config.read(path)
+            try:
+                if config.set('global', 'index-url') == Pypi.mirror_url:
+                    config.remove_option('global', 'index-url')
+                with open(path, 'w') as f:
+                    config.write(f)
+            except (configparser.NoOptionError, configparser.NoSectionError):
+                pass
+        return True
+
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description = 'Use TUNA mirrors everywhere when applicable'
+    )
+
+    parser.add_argument(
+        'subcommand',
+        nargs ='?',
+        metavar = 'SUBCOMMAND',
+        choices = ['up', 'down', 'status'],
+        default = 'up'
+    )
+
+    parser.add_argument(
+        '-v', '--verbose', help='verbose output', action='store_true'
+    )
+
+    parser.add_argument(
+        '-y',
+        '--yes',
+        help = 'always answer yes to questions',
+        action='store_true'
+    )
+
+    parser.add_argument(
+        '-g',
+        '--global',
+        help = 'apply system-wide changes. this option may affect applicability of some modules.',
+        action = 'store_true'
+    )
+
+    args = parser.parse_args()
+    global verbose
+    verbose = args.verbose
+    global always_yes
+    always_yes = args.yes
+    global is_global
+    is_global = args.is_global
+
+    if args.subcommand == 'up':
+        for m in MODULES:
+            if m.is_applicable():
+                if not m.is_online():
+                    m.log('Activating ...')
+                    try:
+                        result = m.up()
+                        if not result:
+                            m.log('Operation canceled', 'w')
+                        else:
+                            m.log('Mirror has been activated', 'o')
+                    except NotImplementedError:
+                        m.log(
+                            'Mirror doesn\'t support activation. Please activate manually', 'e'
+                        )
+
+    if args.subcommand == 'down':
+        for m in MODULES:
+            if m.is_applicable():
+                if m.is_online():
+                    m.log('Deactivating...')
+                    try:
+                        result = m.down()
+                        if not result:
+                            m.log('Operation canceled', 'w')
+                        else:
+                            m.log('Mirror has been deactivated', 'o')
+                    except NotImplementedError:
+                        m.log(
+                            'Mirror doesn\'t support deactivation. Please deactivate manually'
+                        , 'e')
+
+    if args.subcommand == 'status':
+        for m in MODULES:
+            if m.is_applicable():
+                if m.is_online():
+                    m.log('Online', 'o')
+                else:
+                    m.log('Offline')
