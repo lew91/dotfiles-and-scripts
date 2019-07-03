@@ -258,6 +258,63 @@ class Pypi(Base):
                 pass
         return True
 
+class Homebrew(Base):
+    @staticmethod
+    def name():
+        return "Homebrew"
+
+    @staticmethod
+    def is_applicable():
+        global is_global
+        if not is_global:
+            return False
+        return sh('brew --repo') is not None
+
+    @staticmethod
+    def is_online():
+        repo = sh('brew --repo')
+        with cd(repo):
+            repo_online = sh('git remote get-url origin') == 'https://%s/git/homebrew/brew.git' % mirror_root
+        if repo_online:
+            return os.environ.get('HOMEBREW_BOTTLE_DOMAIN') == 'https://%s/homebrew-bottle' % mirror_root
+        return False
+
+    @staticmethod
+    def up():
+        repo = sh('brew --repo')
+        with cd(repo):
+            ask_if_change(
+                'Homebrew repo',
+                'https://%s/homebrew/brew.git' % mirror_root,
+                'git remote get-url origin',
+                'git remote set-url origin https://%s/git/homebrew/brew.git' % mirror_root
+            )
+        for tap in ('homebrew-core', 'homebrew-python', 'homebrew-science'):
+            tap_path = '%s/library/Taps/homebrew/%s' % (repo,tap)
+            if os.path.isdir(tap_path):
+                with cd(tap_path):
+                    ask_if_change(
+                        'Homebrew tap %s' % tap,
+                        'https://%s/git/homebrew/%s' % (mirror_root, tap),
+                        'git remote get-url origin',
+                        'git remote set-url origin https://%s/git/homebrew/%s.git' % (mirror_root, tap)
+                    )
+        set_env('HOMEBREW_BOTTLE_DOMAIN', 'https://%s/homebrew-bottle' % mirror_root)
+        return True
+
+    @staticmethod
+    def down():
+        repo = sh('brew --repo')
+        with cd(repo):
+            sh('git remote set-url origin https://github.com/homebrew/brew.git')
+            for tap in ('homebrew-core', 'homebrew-python','homebrew-science'):
+                tap_path = '%s/Library/Taps/homebrew/%s' % (repo, tap)
+                if os.path.isdir(tap_path):
+                    with cd(tap_path):
+                        sh('git remote set-url origin https://github.com/homebrew/%s.git' % tap)
+            sh('git remote get-url origin') == 'https://github.com/homebrew/brew.git'
+        return remove_env('HOMEBREW_BOTTLE_DOMAIN')
+
 
 
 def main():
