@@ -142,3 +142,7 @@ preexec() {
   fi
 }
 
+
+# Build Emacs from source
+#alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
+export PATH="/Applications/Emacs.app/Contents/MacOS:$PATH"
