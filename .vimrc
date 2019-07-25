@@ -59,6 +59,13 @@ set isk+=_,$,@,%,#,-
 set fileformats=unix,dos,mac
 
 
+"----------------------------------------------------------------
+""" Plugins
+"------------------------------------------------------------
+if filereadable(expand("~/.vimrc_plug"))
+  source ~/.vimrc_plug
+endif
+
 
 "------------------------------------------------------
 """ Vim UI
@@ -994,12 +1001,3 @@ augroup HelpTags
     au!
     autocmd BufWritePost ~/.vim/doc/*   :helptags ~/.vim/doc
 augroup END
-
-
-
-"----------------------------------------------------------------
-""" Plugins
-"------------------------------------------------------------
-if filereadable(expand("~/.vimrc_bundles"))
-  source ~/.vimrc_bundles
-endif

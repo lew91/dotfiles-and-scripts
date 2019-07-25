@@ -1,0 +1,120 @@
+"======[ Vim-plug bundles manager ]=====================
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'w0rp/ale'
+Plug 'luochen1990/rainbow'
+Plug '~/.vim/plugged/YouCompleteMe'
+
+
+call plug#end()
+
+
+
+"=====[ Configure ALE ]==================
+highlight AleError    ctermfg=red     cterm=bold
+highlight AleWarning  ctermfg=magenta cterm=bold
+
+augroup ALE_Autoconfig
+    au!
+    autocmd User GVI_Start  silent call Stop_ALE()
+    autocmd User PV_Start   silent call Stop_ALE()
+    autocmd User PV_End     silent call Start_ALE()
+    autocmd User ALELint    silent HierUpdate
+augroup END
+
+let g:ale_set_loclist          = 0
+let g:ale_set_quickfix         = 1
+let g:ale_set_signs            = 0
+let g:ale_linters              = { 'perl': ['perl'] }
+let g:ale_perl_perl_executable = 'perl'
+let g:ale_perl_perl_options    = '-cw -Ilib'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+
+"let g:ale_sign_column_always = 1 " keep the sign gutter open at all times
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   '%dW %dE',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
+"=====[ rainbow parentheses improved ]==========================
+
+let g:rainbow_active = 1 " 0 if you want to enable it later via :RainbowToggle
+
+" Rainbow parentheses for Lisp and variants
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+let g:rbpt_max = 16
+"autocmd Syntax lisp,scheme,clojure,racket,python,RainbowParenthesesTogglei
+
+
+"========[  YoucompleteMe ] ===============================
+
+let g:ycm_python_interpreter_path='/usr/local/bin/python3'
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+let g:ycm_enable_diagnostic_highlighting = 1
+let g:ycm_filetype_blacklist = {
+      \ 'tagbar': 1,
+      \ 'notes': 1,
+      \ 'markdown': 1,
+      \ 'netrw': 1,
+      \ 'unite': 1,
+      \ 'text': 1,
+      \ 'vimwiki': 1,
+      \ 'pandoc': 1,
+      \ 'infolog': 1,
+      \ 'mail': 1
+      \}
+"let g:ycm_use_clangd = 1
+"let g:ycm_clangd_binary_path = '/usr/local/cellar/llvm/8.0.0_1/bin/clangd'
+"let g:ycm_clangd_args = []
+"let g:ycm_clangd_uses_ycmd_caching = 1
+
+let g:ycm_semantic_triggers =  {
+  \   'c': ['->', '.'],
+  \   'objc': ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+  \            're!\[.*\]\s'],
+  \   'ocaml': ['.', '#'],
+  \   'cpp,cuda,objcpp': ['->', '.', '::'],
+  \   'perl': ['->'],
+  \   'php': ['->', '::'],
+  \   'cs,d,elixir,go,groovy,java,javascript,julia,perl6,python,scala,typescript,vb': ['.'],
+  \   'ruby,rust': ['.', '::'],
+  \   'lua': ['.', ':'],
+  \   'erlang': [':'],
+  \ }
+
+
+
+
