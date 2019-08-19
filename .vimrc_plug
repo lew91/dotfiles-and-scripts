@@ -6,6 +6,11 @@ Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'w0rp/ale'
 Plug 'luochen1990/rainbow'
 Plug '~/.vim/plugged/YouCompleteMe'
+Plug 'haya14busa/incsearch.vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-surround'
+Plug 'chiel92/vim-autoformat'
+Plug 'lervag/vimtex' 
 
 
 call plug#end()
@@ -75,6 +80,20 @@ let g:rbpt_max = 16
 
 
 "========[  YoucompleteMe ] ===============================
+let g:ycm_use_ultisnips_completer=1
+let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_key_list_select_comletion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion =['<C-p>', '<Down>']
+let g:ycm_seed_indentifiers_with_syntax=1
+let g:ycm_complete_in_comments=1
+let g:ycm_complete_in_strings=1
+
+" map Ctrl-g to go to the 'go to definition/declaration' command
+nnoremap <C-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" map Ctrl-h to go to the 'get documentation' command
+nnoremap <C-h> :YcmCompleter GetDoc<CR>
+
 
 let g:ycm_python_interpreter_path='/usr/local/bin/python3'
 let g:ycm_python_sys_path = []

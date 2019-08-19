@@ -115,6 +115,8 @@ endif                                                             "show relative
 set binary
 set noeol
 
+au CompleteDone * pclose
+
 
 "=====[  Default Indentation ]==============================
 
@@ -180,7 +182,7 @@ if &t_Co > 2 || has("gui_running")
     if has("gui_mac") || has("gui_macvim")
         set go=aAce  " remove toolbar
         "set transparency=5
-        set guifont=Menlo:h14
+        set guifont=Menlo:h13
         "set guifont=Source_Code_Pro:h14
         "colorscheme macvim
         "set showtabline=2
