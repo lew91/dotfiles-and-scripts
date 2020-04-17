@@ -5,6 +5,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'w0rp/ale'
 Plug 'luochen1990/rainbow'
+"Plug 'prabirshrestha/async.vim'
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug '~/.vim/plugged/YouCompleteMe'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -32,7 +36,7 @@ augroup END
 let g:ale_set_loclist          = 0
 let g:ale_set_quickfix         = 1
 let g:ale_set_signs            = 0
-let g:ale_linters              = { 'perl': ['perl'] }
+let g:ale_linters              = { 'perl': ['perl']}
 let g:ale_perl_perl_executable = 'perl'
 let g:ale_perl_perl_options    = '-cw -Ilib'
 let g:ale_lint_on_text_changed = 'normal'
@@ -81,6 +85,8 @@ let g:rbpt_max = 16
 
 "========[  YoucompleteMe ] ===============================
 let g:ycm_use_ultisnips_completer=1
+"set completeopt=menu, menuone
+let g:ycm_add_preview_to_completeopt=0
 let g:ycm_autoclose_preview_window_after_completion=1
 let g:ycm_key_list_select_comletion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion =['<C-p>', '<Down>']
@@ -134,6 +140,46 @@ let g:ycm_semantic_triggers =  {
   \   'erlang': [':'],
   \ }
 
-
-
-
+""===========[ Vim Lsp ] ==============================
+"if executable('pyls')
+"    " pip install python-language-server
+"    au User lsp_setup call lsp#register_server({
+"        \ 'name': 'pyls',
+"        \ 'cmd': {server_info->['pyls']},
+"        \ 'whitelist': ['python'],
+"        \ })
+"endif
+"
+"function! s:on_lsp_buffer_enabled() abort
+"    setlocal omnifunc=lsp#complete
+"    setlocal signcolumn=yes
+"    nmap <buffer> gd <plug>(lsp-definition)
+"    nmap <buffer> <f2> <plug>(lsp-rename)
+"    " refer to doc to add more commands
+"endfunction
+"
+"augroup lsp_install
+"    au!
+"    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+"    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+"augroup END
+"
+""=============[ asyncomlete ] ============================
+"inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+"
+"let g:asyncomplete_auto_popup = 0
+"
+"function! s:check_back_space() abort
+"    let col = col('.') - 1
+"    return !col || getline('.')[col - 1]  =~ '\s'
+"endfunction
+"
+"inoremap <silent><expr> <TAB>
+"  \ pumvisible() ? "\<C-n>" :
+"  \ <SID>check_back_space() ? "\<TAB>" :
+"  \ asyncomplete#force_refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
