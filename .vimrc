@@ -100,16 +100,17 @@ set nostartofline                                                 " don't reset 
 set report=0                                                      " always report number of lines changed                
 set nowrap                                                        " dont wrap lines
 set scrolloff=5                                                   " 5 lines above/below cursor when scrolling
-"set number                                                        " show line numbers
+set number                                                        " show line numbers
 set showmatch                                                     " show matching bracket (briefly jump)
 set showcmd                                                       " show typed command in status bar
 "set laststatus=2                                                  " use 2 lines for the status bar
 set matchtime=2                                                   " show matching bracket for 0.2 seconds
 set matchpairs+=<:>,«:»,｢:｣                                              " specially for html
-if exists("&relativenumber")                                      
-    set relativenumber
-    au BufReadPost * set relativenumber
-endif                                                             "show relative line number
+set splitbelow                                                    "put the preview window bottom
+"if exists("&relativenumber")
+"    set relativenumber
+"    au BufReadPost * set relativenumber
+"endif                                                             "show relative line number
 
 " Don't add empty newlines at the end of files
 set binary
@@ -601,7 +602,7 @@ let g:netrw_sort_by        = 'time'
 let g:netrw_sort_direction = 'reverse'
 let g:netrw_banner         = 0
 let g:netrw_liststyle      = 3
-let g:netrw_browse_split   = 3
+let g:netrw_browse_plit   = 3
 let g:netrw_fastbrowse     = 1
 let g:netrw_sort_by        = 'name'
 let g:netrw_sort_direction = 'normal'
