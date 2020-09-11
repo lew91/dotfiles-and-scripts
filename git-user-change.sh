@@ -6,12 +6,12 @@ git filter-branch --env-filter '
     cn="$GIT_COMMITTER_NAME"
     cm="$GIT_COMMITTER_EMAIL"
 
-    if [ "$GIT_COMMITTER_EMAIL" = "910595691@qq.com" ]
+    if [ "$GIT_COMMITTER_EMAIL" = "XXXXXXXXX@qq.com" ]
     then 
         cn="lew91"
         cm="jakelewnet@gmail.com"
     fi 
-    if [ "$GIT_AUTHOR_EMAIL" = "910595691@qq.com" ]
+    if [ "$GIT_AUTHOR_EMAIL" = "XXXXXXXXX@qq.com" ]
     then 
         an="lew91"
         am="jakelewnet@gmail.com"
