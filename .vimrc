@@ -73,6 +73,20 @@ if exists("+wildmenu")
   set wildmode=longest:full,list:full
 endif
 
+"Avoid garbled characters in Chinese language windows OS 
+let $LANGE='en'
+set langmenu=en 
+source $VIMRUNTIME/delmenu.vim 
+source $VIMRUNTIME/menu.vim 
+
+"Ignore compiled files 
+set wildignore=*.o,*~,*.pyc 
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\* 
+else 
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+
 " NO modeline
 set nomodeline
 set modelines=0
@@ -82,6 +96,9 @@ set exrc
 
 " Disable unsafe commands.
 set secure
+
+" For regular expressions turn magic on
+set magic
 
 
 " editor settings
@@ -360,48 +377,6 @@ if has("autocmd")
   autocmd BufWritePre *.py,*.js,*.php,*.gpx,*.rb,*.tpl :call StripTrailingWhitespaces()
 endif
 
-"=====[ Make Visual modes work better ]==================
-
-" Visual Block mode is far more useful that Visual mode (so swap the commands)...
-nnoremap v <C-V>
-nnoremap <C-V> v
-
-xnoremap v <C-V>
-xnoremap <C-V> v
-
-"Square up visual selections...
-set virtualedit=block
-
-" Make BS/DEL work as expected in visual modes (i.e. delete the selected text)...
-xmap <BS> x
-
-" Make vaa select the entire file...
-xmap aa VGo1G
-
-" Make q extend to the surrounding string...
-xmap  q   "_y:call ExtendVisualString()<CR>
-
-let s:closematch = [ '', '', '}', ']', ')', '>', '/', "'", '"', '`' ]
-let s:ldelim = '\< \%(q [qwrx]\= \| [smy] \| tr \) \s*
-\               \%(
-\                   \({\) \| \(\[\) \| \((\) \| \(<\) \| \(/\)
-\               \)
-\               \|
-\                   \(''\) \| \("\) \| \(`\)
-\'
-let s:ldelim = substitute(s:ldelim, '\s\+', '', 'g')
-
-function! ExtendVisualString ()
-    let [lline, lcol, lmatch] = searchpos(s:ldelim, 'bWp')
-    if lline == 0
-        return
-    endif
-    let rdelim = s:closematch[lmatch]
-    normal `>
-    let rmatch = searchpos(rdelim, 'W')
-    normal! v
-    call cursor(lline, lcol)
-endfunction
 
 "=====[ Miscellaneous features (mainly options) ]=====================
 
