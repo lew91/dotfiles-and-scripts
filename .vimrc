@@ -1,4 +1,3 @@
-
 " ---------------------------------------
 """ Basic Setup
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -9,7 +8,7 @@ set nocompatible
 
 "=====[ mapleader mappings ]==================
 
-let mapleader = '_'
+let mapleader = ','
 
 "=====[ Set the default shell.]================
 
@@ -36,9 +35,6 @@ set ttyfast
 
 filetype plugin indent on
 
-"=====[  enable syntax hightlight and completion ] =============
-
-syntax on
 
 "=====[ Convert to Unicode defaults ]===============================
 
@@ -113,7 +109,7 @@ set splitbelow                                                    "put the previ
 "endif                                                             "show relative line number
 
 " Don't add empty newlines at the end of files
-set binary
+"set binary
 set noeol
 
 au CompleteDone * pclose
@@ -148,6 +144,7 @@ let g:html_indent_inctags = "html,body,head,tbody"
 let g:html_indent_script1 = "inc"
 let g:html_indent_style1 = "inc"
 
+
 "------------------------------------------------------------
 """ Colors and Fonts
 "------------------------------------------------------------
@@ -176,54 +173,36 @@ endif
 " Highlight conflict markers.
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-if &t_Co > 2 || has("gui_running")
-    set background=dark
+" Enable syntax highlighting
+syntax enable 
 
-    " for macvim
+" Enable 256 colors palette in Gnome Terminal
+if $COLORTERM == 'gnome-terminal'
+    set t_Co=256
+endif
+
+try
+    colorscheme desert
+catch
+endtry
+
+set background=dark
+
+" Set extra options when running in GUI mode
+if has("gui_running")
+    set guioptions-=T
+    set guioptions-=e
+    set t_Co=256
+    set guitablabel=%M\ %t
+
     if has("gui_mac") || has("gui_macvim")
-        set go=aAce  " remove toolbar
-        "set transparency=5
-        set guifont=Menlo:h13
-        "set guifont=Source_Code_Pro:h14
-        "colorscheme macvim
-        "set showtabline=2
-        "set columns=140
-        "set lines=40
-        noremap <D-M-Left> :tabprevious<cr>
-        noremap <D-M-Right> :tabnext<cr>
-        map <D-1> 1gt
-        map <D-2> 2gt
-        map <D-3> 3gt
-        map <D-4> 4gt
-        map <D-5> 5gt
-        map <D-6> 6gt
-        map <D-7> 7gt
-        map <D-8> 8gt
-        map <D-9> 9gt
-        map <D-0> :tablast<CR>
-    "else
-        "colorscheme pablo
+        set guifont=Menlo:h12
     endif
-else
-    " Indentline
-    let g:indentLine_enabled = 1
-    let g:indentLine_concealcursor = 0
-    let g:indentLine_char = '┆'
-    let g:indentLine_faster = 1
+endif
 
-  
-    if $COLORTERM == 'gnome-terminal'
-        set term=gnome-256color
-    else
-        if $TERM == 'xterm'
-            set term=xterm-256color
-        endif
-    endif
-endif
-  
-if &term =~ '256color'
-    set t_ut=
-endif
+" Set utf8 as standard encoding and en_US as the standard language
+set encoding=utf8
+
 
 "======[ Fix colourscheme for 256 colours ]============================
 
@@ -262,8 +241,6 @@ highlight Tabline      cterm=underline       ctermfg=40     ctermbg=22
 highlight TablineSel   cterm=underline,bold  ctermfg=white  ctermbg=28
 highlight TablineFill  cterm=NONE            ctermfg=black  ctermbg=black
 
-
-
 "---------------------------------------------------------
 """ Files Editing
 "---------------------------------------------------------
@@ -281,30 +258,39 @@ if has('persistent_undo')
 
 endif
 
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
+set nobackup
+set nowb
+set noswapfile
+
 "====[ Toggle visibility of naughty characters ]============
 
 " Make naughty characters visible...
 " (uBB is right double angle, uB7 is middle dot)
-set lcs=tab:»·,trail:␣,nbsp:˷
-highlight InvisibleSpaces ctermfg=Black ctermbg=Black
-call matchadd('InvisibleSpaces', '\S\@<=\s\+\%#\ze\s*$')
+"set lcs=tab:»·,trail:␣,nbsp:˷
+"highlight InvisibleSpaces ctermfg=Black ctermbg=Black
+"call matchadd('InvisibleSpaces', '\S\@<=\s\+\%#\ze\s*$')
 
-augroup VisibleNaughtiness
-    autocmd!
-    autocmd BufEnter  *       set list
-    autocmd BufEnter  *       set list
-    autocmd BufEnter  *.txt   set nolist
-    autocmd BufEnter  *.vp*   set nolist
-    autocmd BufEnter  *       if !&modifiable
-    autocmd BufEnter  *           set nolist
-    autocmd BufEnter  *       endif
-augroup END
+"augroup VisibleNaughtiness
+"    autocmd!
+"    autocmd BufEnter  *       set list
+"    autocmd BufEnter  *       set list
+"    autocmd BufEnter  *.txt   set nolist
+"    autocmd BufEnter  *.vp*   set nolist
+"    autocmd BufEnter  *       if !&modifiable
+"    autocmd BufEnter  *           set nolist
+"    autocmd BufEnter  *       endif
+"augroup END
 
 "====[ Set up smarter search behaviour ]=======================
 
 set incsearch       "Lookahead as search pattern is specified
 set ignorecase      "Ignore case in all searches...
 set smartcase       "...unless uppercase letters used
+
+" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
+map <space> /
+map <C-space> ?
 
 set hlsearch        "Highlight all matches
 highlight clear Search
@@ -417,16 +403,6 @@ function! ExtendVisualString ()
     call cursor(lline, lcol)
 endfunction
 
-"=====[ Make arrow keys move visual blocks around ]======================
-
-xmap <up>    <Plug>SchleppUp
-xmap <down>  <Plug>SchleppDown
-xmap <left>  <Plug>SchleppLeft
-xmap <right> <Plug>SchleppRight
-
-xmap D       <Plug>SchleppDupLeft
-xmap <C-D>   <Plug>SchleppDupLeft
-
 "=====[ Miscellaneous features (mainly options) ]=====================
 
 set title           "Show filename in titlebar of window
@@ -470,30 +446,6 @@ set timeout timeoutlen=300 ttimeoutlen=300
 set updatetime=2000
 
 set scrolloff=2                     "Scroll when 3 lines from top/bottom
-
-
-"=====[ Cut and paste from the system clipboard ]====================
-
-" When in Normal mode, paste over the current line...
-nmap  <C-P> 0d$"*p
-
-" When in Visual mode, paste over the selected region...
-xmap  <C-P> "*pgv
-
-" In Normal mode, yank the entire buffer...
-nmap <C-C> 1G"*yG``:call YankedToClipboard()<CR>
-
-" In Visual mode, yank the selection...
-xmap  <C-C> "*y:call YankedToClipboard()<CR>
-
-function! YankedToClipboard ()
-    let block_of = (visualmode() == "\<C-V>" ? 'block of ' : '')
-    let N = strlen(substitute(@*, '[^\n]\|\n$', '', 'g')) + 1
-    let lines = (N == 1 ? 'line' : 'lines')
-    redraw
-    echo block_of . N lines 'yanked to clipboard'
-endfunction
-
 
 "=====[ Search folding ]=====================
 
@@ -651,6 +603,7 @@ cmap w!! %!sudo tee >/dev/null %
 " Quickly edit/reload the vimrc file
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
 
 "-------------------------------------------
 """ Moving and Editing mappings
