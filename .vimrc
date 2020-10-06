@@ -843,6 +843,19 @@ function! StripTrailingWhitespaces()
     call cursor(l, c)
 endfunction
 
+" Delete trailing whitespace one save, usefule for some filetypes
+function! CleanExtraSpace()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e 
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfunction
+
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*coffee :call CleanExtraSpace()
+endif
+
 function! CmdLine(str)
   exe "menu Foo.Bar :" . a:str
   emenu Foo.Bar
