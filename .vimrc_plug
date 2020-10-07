@@ -84,63 +84,63 @@ let g:rbpt_max = 16
 "autocmd Syntax lisp,scheme,clojure,racket,python,RainbowParenthesesTogglei
 
 ""========[  YoucompleteMe ] ===============================
-let g:ycm_use_ultisnips_completer=1
-"set completeopt=menu, menuone
-let g:ycm_add_preview_to_completeopt=0
-let g:ycm_autoclose_preview_window_after_completion=1
-let g:ycm_key_list_select_comletion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion =['<C-p>', '<Down>']
-let g:ycm_key_list_stop_completion = ['<CR>']
-let g:ycm_seed_indentifiers_with_syntax=1
-let g:ycm_complete_in_comments=1
-let g:ycm_complete_in_strings=1
-
- map Ctrl-g to go to the 'go to definition/declaration' command
-nnoremap <C-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
-
- map Ctrl-h to go to the 'get documentation' command
-nnoremap <C-h> :YcmCompleter GetDoc<CR>
-
-
-let g:ycm_python_interpreter_path='/usr/local/bin/python3'
-let g:ycm_python_sys_path = []
-let g:ycm_extra_conf_vim_data = [
-    \  'g:ycm_python_interpreter_path',
-    \  'g:ycm_python_sys_path'
-    \]
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
-let g:ycm_enable_diagnostic_highlighting = 1
-let g:ycm_filetype_blacklist = {
-    \ 'tagbar': 1,
-    \ 'notes': 1,
-    \ 'markdown': 1,
-    \ 'netrw': 1,
-    \ 'unite': 1,
-    \ 'text': 1,
-    \ 'vimwiki': 1,
-    \ 'pandoc': 1,
-    \ 'infolog': 1,
-    \ 'mail': 1
-    \}
-let g:ycm_use_clangd = 1
-let g:ycm_clangd_binary_path = '/usr/local/cellar/llvm/8.0.0_1/bin/clangd'
-let g:ycm_clangd_args = []
-let g:ycm_clangd_uses_ycmd_caching = 1
-
-let g:ycm_semantic_triggers =  {
-    \   'c': ['->', '.'],
-    \   'objc': ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
-    \            're!\[.*\]\s'],
-    \   'ocaml': ['.', '#'],
-    \   'cpp,cuda,objcpp': ['->', '.', '::'],
-    \   'perl': ['->'],
-    \   'php': ['->', '::'],
-    \   'cs,d,elixir,go,groovy,java,javascript,julia,perl6,python,scala,typescript,vb': ['.'],
-    \   'ruby,rust': ['.', '::'],
-    \   'lua': ['.', ':'],
-    \   'erlang': [':'],
-    \ }
-
+"let g:ycm_use_ultisnips_completer=1
+""set completeopt=menu, menuone
+"let g:ycm_add_preview_to_completeopt=0
+"let g:ycm_autoclose_preview_window_after_completion=1
+"let g:ycm_key_list_select_comletion = ['<C-n>', '<Down>']
+"let g:ycm_key_list_previous_completion =['<C-p>', '<Down>']
+"let g:ycm_key_list_stop_completion = ['<CR>']
+"let g:ycm_seed_indentifiers_with_syntax=1
+"let g:ycm_complete_in_comments=1
+"let g:ycm_complete_in_strings=1
+"
+" map Ctrl-g to go to the 'go to definition/declaration' command
+"nnoremap <C-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"
+" map Ctrl-h to go to the 'get documentation' command
+"nnoremap <C-h> :YcmCompleter GetDoc<CR>
+"
+"
+"let g:ycm_python_interpreter_path='/usr/local/bin/python3'
+"let g:ycm_python_sys_path = []
+"let g:ycm_extra_conf_vim_data = [
+"    \  'g:ycm_python_interpreter_path',
+"    \  'g:ycm_python_sys_path'
+"    \]
+"let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+"let g:ycm_enable_diagnostic_highlighting = 1
+"let g:ycm_filetype_blacklist = {
+"    \ 'tagbar': 1,
+"    \ 'notes': 1,
+"    \ 'markdown': 1,
+"    \ 'netrw': 1,
+"    \ 'unite': 1,
+"    \ 'text': 1,
+"    \ 'vimwiki': 1,
+"    \ 'pandoc': 1,
+"    \ 'infolog': 1,
+"    \ 'mail': 1
+"    \}
+"let g:ycm_use_clangd = 1
+"let g:ycm_clangd_binary_path = '/usr/local/cellar/llvm/10.0.0_1/bin/clangd'
+"let g:ycm_clangd_args = []
+"let g:ycm_clangd_uses_ycmd_caching = 1
+"
+"let g:ycm_semantic_triggers =  {
+"    \   'c': ['->', '.'],
+"    \   'objc': ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+"    \            're!\[.*\]\s'],
+"    \   'ocaml': ['.', '#'],
+"    \   'cpp,cuda,objcpp': ['->', '.', '::'],
+"    \   'perl': ['->'],
+"    \   'php': ['->', '::'],
+"    \   'cs,d,elixir,go,groovy,java,javascript,julia,perl6,python,scala,typescript,vb': ['.'],
+"    \   'ruby,rust': ['.', '::'],
+"    \   'lua': ['.', ':'],
+"    \   'erlang': [':'],
+"    \ }
+"
 ""===========[ Vim Lsp ] ==============================
 "if executable('pyls')
 "    " pip install python-language-server
