@@ -15,7 +15,7 @@ let mapleader = ','
 if exists('$SHELL')
     set shell=$SHELL
 else
-    set shell=/bin/sh
+    set shell=/bin/zsh
 endif
 
 "When the type of shell script is /bin/sh, assume a POSIX-compatible 
